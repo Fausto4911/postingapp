@@ -21,7 +21,19 @@ var conninfo string = ""
         db, err := sql.Open("postgres", conninfo)
         if err != nil {
             panic(err)
-        }
+		}
+
+rows, err := db.Query(`SELECT * FROM table WHERE name=$1`, `Moz`)
+if err != nil {
+    panic(err)
+}
+
+var col1 string
+var col2 string
+for rows.Next() {
+    rows.Scan(&col1, &col2)
+    fmt.Println(col1, col2)
+}
 
 */
 const (
