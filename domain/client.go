@@ -10,4 +10,5 @@ type Client struct {
 type ClientRepository interface {
 	Store(client Client) Client
 	FindById(id int64) Client
+	FindAll() []Client
 }

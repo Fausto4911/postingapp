@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type Post struct {
 	PostId       int64
@@ -9,9 +12,28 @@ type Post struct {
 	Votes        int64
 	Category     string
 	CreationDate time.Time
+	Comments     []Comment
 }
 
 type PostRepository interface {
 	Store(post Post) Post
 	FindById(id int64) Post
+}
+
+func (post *Post) AddComment(comment Comment) error {
+	post.Comments = append(post.Comments, comment)
+	return nil
+}
+
+func (post *Post) AddVote(vote int64) error {
+	post.Votes = post.Votes + vote
+	return nil
+}
+
+func (post *Post) addCategory(category string) error {
+	if len(category) < 1 {
+		return errors.New("Cannot save the category of lenght less than 1")
+	}
+	post.Category = category
+	return nil
 }
