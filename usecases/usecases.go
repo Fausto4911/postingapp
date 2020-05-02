@@ -46,10 +46,33 @@ func (postI *PostInteractor) AddCategory(postId int64, category string) error {
 	return nil
 }
 
+//Cliente crea un post
+func (postI *PostInteractor) AddPost(clientId int64, header string, category string) error {
+	var post domain.Post
+	post.Client = postI.ClientRepository.FindById(clientId)
+	post.Header = header
+	post.Category = category
+	postI.PostRepository.Store(post)
+	return nil
+}
+
+//Obtener todos los post de un cliente
+//Cliente crea un post
+func (postI *PostInteractor) GetPostsByClientId(clientId int64) ([]domain.Post, error) {
+	var postList []domain.Post
+	for _, element := range postI.PostRepository.GetAll() {
+		if element.Client.UserId == clientId {
+			postList = append(postList, element)
+		}
+
+	}
+	return postList, nil
+}
+
 //El Cliente hace login
 func LoginUser(userName, passw string, clientRepo domain.ClientRepository) error {
 	for _, element := range clientRepo.FindAll() {
-		if strings.Compare(element.Password, passw) == 0 && strings.Compare(element.Username, userName) {
+		if strings.Compare(element.Password, passw) == 0 && strings.Compare(element.Username, userName) == 0 {
 			return nil
 		}
 	}
