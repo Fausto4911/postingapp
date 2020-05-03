@@ -8,7 +8,9 @@ type Client struct {
 }
 
 type ClientRepository interface {
-	Store(client Client) Client
-	FindById(id int64) Client
-	FindAll() []Client
+	Store(client Client) (Client, error)
+	FindById(id int64) (Client, error)
+	FindAll() ([]Client, error)
+	Update(client Client) (Client, error)
+	Delete(client Client) (bool, error)
 }

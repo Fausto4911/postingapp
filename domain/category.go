@@ -6,6 +6,9 @@ type Category struct {
 }
 
 type CategoryRepository interface {
-	Store(category Category) Category
-	FindById(id int64) Category
+	Store(category Category) (Category, error)
+	FindById(id int64) (Category, error)
+	FindAll() ([]Category, error)
+	Update(category Category) (Category, error)
+	Delete(category Category) (bool, error)
 }

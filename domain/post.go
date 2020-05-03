@@ -16,9 +16,11 @@ type Post struct {
 }
 
 type PostRepository interface {
-	Store(post Post) Post
-	FindById(id int64) Post
-	GetAll() []Post
+	Store(post Post) (Post, error)
+	FindById(id int64) (Post, error)
+	FindAll() ([]Post, error)
+	Update(client Client) (Client, error)
+	Delete(client Client) (bool, error)
 }
 
 func (post *Post) AddComment(comment Comment) error {
