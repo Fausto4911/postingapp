@@ -1,4 +1,4 @@
-package domain
+package model
 
 import (
 	"errors"
@@ -6,13 +6,13 @@ import (
 )
 
 type Post struct {
-	PostId       int64
-	Client       Client
-	Header       string
-	Votes        int64
-	Category     string
-	CreationDate time.Time
-	Comments     []Comment
+	PostId       int64     `json:"post_id"`
+	Client       Client    `json:"client"`
+	Header       string    `json:"header"`
+	Votes        int64     `json:"votes"`
+	Category     string    `json:"category"`
+	CreationDate time.Time `json:"creation_date"`
+	Comments     []Comment `json:"comments"`
 }
 
 type PostRepository interface {

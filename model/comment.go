@@ -1,13 +1,13 @@
-package domain
+package model
 
 import "time"
 
 type Comment struct {
-	CommentId    int64
-	User         Client
-	Description  string
-	CreationDate time.Time
-	Post         Post
+	CommentId    int64     `json:"comment_id"`
+	User         Client    `json:"user"`
+	Description  string    `json:"description"`
+	CreationDate time.Time `json:"creation_date"`
+	Post         Post      `json:"post"`
 }
 
 type CommentRepository interface {

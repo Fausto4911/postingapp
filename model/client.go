@@ -1,10 +1,10 @@
-package domain
+package model
 
 type Client struct {
-	UserId      int64
-	Username    string
-	Password    string
-	Description string
+	UserId      int64  `json:"user_id"`
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	Description string `json:"description"`
 }
 
 type ClientRepository interface {
