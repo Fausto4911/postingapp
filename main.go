@@ -2,16 +2,24 @@ package main
 
 import (
 	"fmt"
-	"postingapp/domain"
+	"log"
+	"postingapp/model"
+	"postingapp/repository/postgres"
 )
 
 func main() {
 	fmt.Println("======== Running main ==========")
-	var cl domain.Client
-	cl.UserId = 78
-	fmt.Println(cl, cl.Username)
+	e := model.Estudiante{
+		Name: "Alejandro",
+		Age:  45,
+		Active: true,
+	}
+	
+	err := postgres.EstudianteCreate(e)
+	if  err != nil {
+		log.Fatal()
+	}
 
-	var post domain.Post
-	post.Client = cl
-	fmt.Println(post)
+	fmt.Println(" Object Estuiante created !")
+	
 }
