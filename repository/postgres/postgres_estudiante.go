@@ -1,13 +1,14 @@
 package postgres
 
 import (
+	"database/sql"
 	"errors"
 	"postingapp/model"
 	"postingapp/repository"
+	"github.com/lib/pq"
 )
 
 func EstudianteCreate(e model.Estudiante) error {
-
 	// el formato de ($1, $2, $3) es propio de postgres, la comilla ` ` son para poder usar enter en el string
 	q := `INSERT INTO estudiantes (name, age, active )
           VALUES ($1, $2, $3)`
@@ -19,7 +20,7 @@ func EstudianteCreate(e model.Estudiante) error {
 	}
 	defer stmt.Close()
 
-	r, err := stmt.Exec(e.Name, e.Age, e.Active) // this statement is use in insert, delete and update
+	r, err := stmt.Exec(getNUllString(e.Name), getNUllInt(int64(e.Age)), e.Active) // this statement is use in insert, delete and update statement
 	if err != nil {
 		return err
 	}
@@ -29,4 +30,70 @@ func EstudianteCreate(e model.Estudiante) error {
 		return errors.New("No rows affected")
 	}
 	return nil
+}
+
+func EstudianteGetAll() (es []model.Estudiante, err error) {
+	q := `SELECT id, name, age, active, created_at, updated_at
+         FROM estudiantes`
+
+	timeNull := pq.NullTime{}
+	intNUll := sql.NullInt64{}
+	stringNUll := sql.NullString{}
+	boolNUll := sql.NullBool{}
+
+
+	db := repository.GetConnection()
+	defer db.Close()
+
+	rows, err := db.Query(q)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		e := model.Estudiante{}
+		err = rows.Scan(
+			&e.ID,
+			&stringNUll,
+			&intNUll,
+			&boolNUll,
+			&e.CreatedAt,
+			&timeNull,
+			)
+		if err != nil {
+			return
+		}
+
+		e.UpdatedAt = timeNull.Time
+		e.Name = stringNUll.String
+		e.Age = int16(intNUll.Int64)
+		e.Active = boolNUll.Bool
+
+
+
+		es = append(es, e)
+	}
+	return es, nil
+}
+
+//cast zero values from struct to null values and send it to DB
+func getNUllInt (i int64) (n sql.NullInt64) {
+	if i == 0 {
+		n.Valid = false
+	} else {
+		n.Valid = true
+		n.Int64 = int64(i)
+	}
+	return n
+}
+
+func getNUllString (s string) ( n sql.NullString) {
+	if s == "" {
+		n.Valid = false
+	} else {
+		n.Valid = true
+		n.String = s
+	}
+	return n
 }
