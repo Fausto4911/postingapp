@@ -10,7 +10,7 @@ import (
 )
 
 type IEstudianteRepository struct {
-	ctx context.Context
+	Ctx context.Context
 }
 
 //Store(estudiante Estudiante) error
@@ -25,15 +25,27 @@ func (rep IEstudianteRepository) GetById(id int) (m model.Estudiante, err error)
 	db := repository.GetConnection()
 	defer db.Close()
 
-	err = db.QueryRowContext(rep.ctx, q, id).Scan(
+	name := sql.NullString{}
+	age := sql.NullInt64{}
+	create := pq.NullTime{}
+	update := pq.NullTime{}
+
+
+	err = db.QueryRowContext(rep.Ctx, q, id).Scan(
 		&m.ID,
-		&m.Age,
+		&name,
+		&age,
 		&m.Active,
-		&m.CreatedAt,
-		&m.UpdatedAt)
+		&create,
+		&update)
 	if err != nil {
 		return
 	}
+	m.Name = name.String
+	m.Age = int16(age.Int64)
+	m.CreatedAt = create.Time
+	m.UpdatedAt = update.Time
+
     return
 }
 
