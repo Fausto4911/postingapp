@@ -4,12 +4,16 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"postingapp/model"
 	"postingapp/repository/postgres"
+	"time"
 )
+
 var ctx context.Context
+
 func main() {
-	fmt.Println("======== Running main ==========")
-    ctx = context.Background()
+	fmt.Println("*** Running main ***")
+	ctx = context.Background()
 	repo := postgres.IEstudianteRepository{
 		Ctx: ctx,
 	}
@@ -18,7 +22,28 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("======== GetById ==========")
 	fmt.Println(e)
+
+	list, err := repo.GetAll()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("======== GetAll ==========")
+	fmt.Println(list)
+
+	m := model.Estudiante{
+		ID:        1,
+		Name:      "PEPE",
+		Age:       99,
+		UpdatedAt: time.Now(),
+	}
+	fmt.Println("======== Update ==========")
+	err = repo.Update(m)
+	if err != nil {
+		log.Fatal(err)
+	}
 	//e := model.Estudiante{
 	//	Name: "Fausto",
 	//	Active: true,

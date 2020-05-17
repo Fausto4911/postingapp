@@ -119,7 +119,7 @@ func (rep IEstudianteRepository) Update(e model.Estudiante) error {
 
 	q := `UPDATE estudiantes
          SET name = $1, age = $2, active = $3, updated_at = now()
-         WHERE id = $5`
+         WHERE id = $4`
 
 	db := repository.GetConnection()
 	defer db.Close()
