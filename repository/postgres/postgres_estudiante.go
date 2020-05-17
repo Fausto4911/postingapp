@@ -25,7 +25,7 @@ func (rep IEstudianteRepository) GetById(id int) (m model.Estudiante, err error)
 	db := repository.GetConnection()
 	defer db.Close()
 
-	err = db.QueryRowContext(rep.ctx, q).Scan(
+	err = db.QueryRowContext(rep.ctx, q, id).Scan(
 		&m.ID,
 		&m.Age,
 		&m.Active,
