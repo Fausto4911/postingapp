@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"github.com/lib/pq"
@@ -8,7 +9,35 @@ import (
 	"postingapp/repository"
 )
 
-func EstudianteCreate(e model.Estudiante) error {
+type IEstudianteRepository struct {
+	ctx context.Context
+}
+
+//Store(estudiante Estudiante) error
+//GetAll(estudiante Estudiante) ([]Estudiante, error)
+//GetById(id int) (Estudiante, error)
+//Delete(id int) error
+//Update(id int) error
+
+func (rep IEstudianteRepository) GetById(id int) (m model.Estudiante, err error) {
+	q := `SELECT id, name, age, active, created_at, updated_at
+         FROM estudiantes WHERE id = $1`
+	db := repository.GetConnection()
+	defer db.Close()
+
+	err = db.QueryRowContext(rep.ctx, q).Scan(
+		&m.ID,
+		&m.Age,
+		&m.Active,
+		&m.CreatedAt,
+		&m.UpdatedAt)
+	if err != nil {
+		return
+	}
+    return
+}
+
+func (rep IEstudianteRepository) Store(e model.Estudiante) error {
 	// el formato de ($1, $2, $3) es propio de postgres, la comilla ` ` son para poder usar enter en el string
 	q := `INSERT INTO estudiantes (name, age, active )
           VALUES ($1, $2, $3)`
@@ -19,12 +48,10 @@ func EstudianteCreate(e model.Estudiante) error {
 		return err
 	}
 	defer stmt.Close()
-
 	r, err := stmt.Exec(getNUllString(e.Name), getNUllInt(int64(e.Age)), e.Active) // this statement is use in insert, delete and update statement
 	if err != nil {
 		return err
 	}
-
 	i, _ := r.RowsAffected()
 	if i != 1 {
 		return errors.New("No rows affected")
@@ -32,7 +59,7 @@ func EstudianteCreate(e model.Estudiante) error {
 	return nil
 }
 
-func EstudianteGetAll() (es []model.Estudiante, err error) {
+func (rep IEstudianteRepository) GetAll() (es []model.Estudiante, err error) {
 	q := `SELECT id, name, age, active, created_at, updated_at
          FROM estudiantes`
 
@@ -74,7 +101,7 @@ func EstudianteGetAll() (es []model.Estudiante, err error) {
 	return es, nil
 }
 
-func EstudianteUpdate(e model.Estudiante) error {
+func (rep IEstudianteRepository) Update(e model.Estudiante) error {
 	//q := `SELECT id, name, age, active, created_at, updated_at
 	//FROM estudiantes`
 
@@ -103,7 +130,7 @@ func EstudianteUpdate(e model.Estudiante) error {
 	return nil
 }
 
-func EstudianteDelete (id int) error {
+func (rep IEstudianteRepository) Delete(id int) error {
 	q := `DELETE FROM estudiantes WHERE id = $1`
 
 	db := repository.GetConnection()
