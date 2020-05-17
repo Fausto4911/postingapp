@@ -3,9 +3,9 @@ package postgres
 import (
 	"database/sql"
 	"errors"
+	"github.com/lib/pq"
 	"postingapp/model"
 	"postingapp/repository"
-	"github.com/lib/pq"
 )
 
 func EstudianteCreate(e model.Estudiante) error {
@@ -41,7 +41,6 @@ func EstudianteGetAll() (es []model.Estudiante, err error) {
 	stringNUll := sql.NullString{}
 	boolNUll := sql.NullBool{}
 
-
 	db := repository.GetConnection()
 	defer db.Close()
 
@@ -60,7 +59,7 @@ func EstudianteGetAll() (es []model.Estudiante, err error) {
 			&boolNUll,
 			&e.CreatedAt,
 			&timeNull,
-			)
+		)
 		if err != nil {
 			return
 		}
@@ -70,15 +69,68 @@ func EstudianteGetAll() (es []model.Estudiante, err error) {
 		e.Age = int16(intNUll.Int64)
 		e.Active = boolNUll.Bool
 
-
-
 		es = append(es, e)
 	}
 	return es, nil
 }
 
+func EstudianteUpdate(e model.Estudiante) error {
+	//q := `SELECT id, name, age, active, created_at, updated_at
+	//FROM estudiantes`
+
+	q := `UPDATE estudiantes
+         SET name = $1, age = $2, active = $3, updated_at = now()
+         WHERE id = $5`
+
+	db := repository.GetConnection()
+	defer db.Close()
+
+	stmt, err := db.Prepare(q)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	r, err := stmt.Exec(e.Name, e.Age, e.Active, e.ID)
+	if err != nil {
+		return err
+	}
+
+	rows, err := r.RowsAffected()
+	if rows != 1 {
+		return errors.New("Error: No rows affected")
+	}
+	return nil
+}
+
+func EstudianteDelete (id int) error {
+	q := `DELETE FROM estudiantes WHERE id = $1`
+
+	db := repository.GetConnection()
+	defer db.Close()
+
+	stmt, err := db.Prepare(q)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	r, err := stmt.Exec(id)
+
+	if err != nil {
+		return err
+	}
+
+	rows, err := r.RowsAffected()
+	if rows != 1 {
+		return errors.New("Error: No rows affected")
+	}
+	return nil
+
+}
+
 //cast zero values from struct to null values and send it to DB
-func getNUllInt (i int64) (n sql.NullInt64) {
+func getNUllInt(i int64) (n sql.NullInt64) {
 	if i == 0 {
 		n.Valid = false
 	} else {
@@ -88,7 +140,7 @@ func getNUllInt (i int64) (n sql.NullInt64) {
 	return n
 }
 
-func getNUllString (s string) ( n sql.NullString) {
+func getNUllString(s string) (n sql.NullString) {
 	if s == "" {
 		n.Valid = false
 	} else {
