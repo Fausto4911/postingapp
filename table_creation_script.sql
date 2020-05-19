@@ -33,6 +33,14 @@ CREATE TABLE IF NOT EXISTS category (
 	create_at TIMESTAMP DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS likes (
+    id SERIAL PRIMARY KEY NOT NULL,
+	user_id INTEGER NOT NULL,
+	type_id INTEGER,
+	quantity INTEGER,
+	entity_type INTEGER
+);
+
 ALTER TABLE post ADD CONSTRAINT post_app_user_id_fkey FOREIGN KEY (user_id)
 REFERENCES app_user (id);
 ALTER TABLE post ADD CONSTRAINT post_category_id_fkey FOREIGN KEY (category_id)
@@ -41,6 +49,8 @@ ALTER TABLE comment ADD CONSTRAINT comment_app_user_id_fkey FOREIGN KEY (user_id
 REFERENCES app_user (id);
 ALTER TABLE comment ADD CONSTRAINT comment_post_id_fkey FOREIGN KEY (post_id)
 REFERENCES post (id);
+ALTER TABLE likes ADD CONSTRAINT likes_app_user_id_fkey FOREIGN KEY (user_id)
+REFERENCES app_user (id);
 
 
 
