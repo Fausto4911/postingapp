@@ -30,7 +30,6 @@ func (rep IEstudianteRepository) GetById(id int) (m model.Estudiante, err error)
 	create := pq.NullTime{}
 	update := pq.NullTime{}
 
-
 	err = db.QueryRowContext(rep.Ctx, q, id).Scan(
 		&m.ID,
 		&name,
@@ -46,7 +45,7 @@ func (rep IEstudianteRepository) GetById(id int) (m model.Estudiante, err error)
 	m.CreatedAt = create.Time
 	m.UpdatedAt = update.Time
 
-    return
+	return
 }
 
 func (rep IEstudianteRepository) Store(e model.Estudiante) error {

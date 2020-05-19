@@ -19,7 +19,7 @@ func (service *PostService) Store(post domain.Post) (domain.Post, error) {
 		post.Header,
 		post.Votes,
 		post.Category,
-		time.Now()
+		time.Now(),
 	)
 }
 

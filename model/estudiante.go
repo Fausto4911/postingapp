@@ -13,8 +13,8 @@ type Estudiante struct {
 
 type EstudianteRepository interface {
 	Store(estudiante Estudiante) error
-	GetAll(estudiante Estudiante) ([]Estudiante, error)
+	GetAll() ([]Estudiante, error)
 	GetById(id int) (Estudiante, error)
 	Delete(id int) error
-	Update(id int) error
+	Update(estudiante Estudiante) error
 }

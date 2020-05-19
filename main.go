@@ -46,10 +46,10 @@ func main() {
 	}
 
 	fmt.Println("======== Store ==========")
-	es := model.Estudiante {
-		Name: "Emmanuel",
+	es := model.Estudiante{
+		Name:   "Emmanuel",
 		Active: true,
-		Age: 25,
+		Age:    25,
 	}
 
 	err = repo.Store(es)

@@ -9,3 +9,11 @@ type AppUser struct {
 	Avatar   string    `json:"avatar_url"`
 	CreateAt time.Time `json:"create_at"`
 }
+
+type AppUserRepository interface {
+	Store(appUser AppUser) error
+	GetAll() ([]AppUser, error)
+	GetById(id int) (AppUser, error)
+	Delete(id int) error
+	Update(appUser AppUser) error
+}
