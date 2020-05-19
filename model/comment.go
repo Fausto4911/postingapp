@@ -4,8 +4,10 @@ import "time"
 
 type Comment struct {
 	Id       uint16    `json:"id"`
-	User     uint16    `json:"user"`
+	User     User      `json:"user"`
 	Text     string    `json:"text"`
-	Creation time.Time `json:"creation"`
-	Post     uint16    `json:"post"`
+	CreateAt time.Time `json:"create_at"`
+	Post     Post      `json:"post"`
+	Parent   *Comment  `json:"parent"`
+	Child    *Comment  `json:""child`
 }

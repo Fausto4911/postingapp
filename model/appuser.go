@@ -2,10 +2,10 @@ package model
 
 import "time"
 
-type User struct {
+type AppUser struct {
 	Id       uint16    `json:"id"`
 	Name     string    `json:"name"`
 	Password string    `json:"password"`
-	Image    string    `json:"image"`
-	Date     time.Time `json:date`
+	Avatar   string    `json:"avatar_url"`
+	CreateAt time.Time `json:"create_at"`
 }

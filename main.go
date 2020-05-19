@@ -44,10 +44,19 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//e := model.Estudiante{
-	//	Name: "Fausto",
-	//	Active: true,
-	//}
+
+	fmt.Println("======== Store ==========")
+	es := model.Estudiante {
+		Name: "Emmanuel",
+		Active: true,
+		Age: 25,
+	}
+
+	err = repo.Store(es)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 	//
 	//err := postgres.EstudianteCreate(e)
 	//if  err != nil {
