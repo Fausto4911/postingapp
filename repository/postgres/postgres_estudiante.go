@@ -7,6 +7,7 @@ import (
 	"github.com/lib/pq"
 	"postingapp/model"
 	"postingapp/repository"
+	"postingapp/utils"
 )
 
 type IEstudianteRepository struct {
@@ -59,7 +60,7 @@ func (rep IEstudianteRepository) Store(e model.Estudiante) error {
 		return err
 	}
 	defer stmt.Close()
-	r, err := stmt.Exec(getNUllString(e.Name), getNUllInt(int64(e.Age)), e.Active) // this statement is use in insert, delete and update statement
+	r, err := stmt.Exec(utils.GetNUllString(e.Name), utils.GetNUllInt(int64(e.Age)), e.Active) // this statement is use in insert, delete and update statement
 	if err != nil {
 		return err
 	}
@@ -165,25 +166,4 @@ func (rep IEstudianteRepository) Delete(id int) error {
 	}
 	return nil
 
-}
-
-//cast zero values from struct to null values and send it to DB
-func getNUllInt(i int64) (n sql.NullInt64) {
-	if i == 0 {
-		n.Valid = false
-	} else {
-		n.Valid = true
-		n.Int64 = int64(i)
-	}
-	return n
-}
-
-func getNUllString(s string) (n sql.NullString) {
-	if s == "" {
-		n.Valid = false
-	} else {
-		n.Valid = true
-		n.String = s
-	}
-	return n
 }
